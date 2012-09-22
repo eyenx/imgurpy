@@ -38,7 +38,7 @@ class ImgUr():
 		out=self.jsdo()["rsp"]["image"]
 		self.thumb=out["large_thumbnail"]
 		self.url=out["original_image"]
-		self.forum="[url="+self.url+"[img]"+self.thumb+"[/img][/url]"
+		self.forum="[url="+self.url+"][img]"+self.thumb+"[/img][/url]"
 
 img=ImgUr(imgpth,url,devkey)
 img.response()
