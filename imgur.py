@@ -36,9 +36,10 @@ class ImgUr():
 		return(js.loads(self.imgup()))
 	def response(self):
 		out=self.jsdo()["rsp"]["image"]
+		self.sthumb=out["small_thumbnail"]
 		self.thumb=out["large_thumbnail"]
 		self.url=out["original_image"]
-		self.forum="[url="+self.url+"][img]"+self.thumb+"[/img][/url]"
+		self.forum="[url="+self.url+"][img]"+self.sthumb+"[/img][/url]"
 
 img=ImgUr(imgpth,url,devkey)
 img.response()
@@ -46,6 +47,6 @@ echofor=sub.Popen(['echo',img.forum],stdin=sub.PIPE,stdout=sub.PIPE)
 xclipfor=sub.Popen(['xclip','-i','-se','c'],stdin=echofor.stdout)
 echourl=sub.Popen(['echo',img.url],stdin=sub.PIPE,stdout=sub.PIPE)
 xclipurl=sub.Popen(['xclip','-i','-se','p'],stdin=echourl.stdout)
-print("Thumbnail:\t"+img.thumb+"\nImageUrl:\t"+img.url+"\nForumBBCode:\t"+img.forum+"\n\nIt has been xclipped! In the CTRL+V for ForumBBCode, SHIFT-Insert for ImageUrl")
+print("\nThumbnail (large):\t"+img.thumb+"\nThumbnail (small):\t"+img.sthumb+"\nImageUrl:\t\t"+img.url+"\nForumBBCode:\t\t"+img.forum+"\n\nIt has been xclipped! In the CTRL+V for ForumBBCode, SHIFT-Insert for ImageUrl")
 
 
