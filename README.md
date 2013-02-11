@@ -1,6 +1,5 @@
 imgur.py
 ========
-by gnomeye
 
 Imgur python upload script
 
