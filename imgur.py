@@ -11,6 +11,7 @@ import urllib.request as ureq
 import urllib.parse as uparse
 import base64 as b64
 import json as js
+import os.path as osp
 
 if (len(sys.argv) != 2):
 	sys.exit("\nYou must provide one filename as a parameter!\ntry again next time...\n")
@@ -22,7 +23,7 @@ cfgfile="****"
 cfg=open(cfgfile,"r").read()
 cfg=js.loads(cfg)
 ## other variables
-url="https://api.imgur.com/3/upload.json"
+url="https://api.imgur.com/3/image"
 urlauth="https://api.imgur.com/oauth2/token"
 imgurl="http://i.imgur.com/"
 imgend=".jpg"
@@ -30,6 +31,7 @@ imgend=".jpg"
 class ImgUr():
     def __init__(self,imgpth):
         self.imgpth=imgpth
+        self.imgname=osp.basename(self.imgpth)
         self.url=url
         self.urlauth=urlauth
         self.refresh_token=cfg["refresh_token"]
@@ -44,7 +46,7 @@ class ImgUr():
         t=open(self.imgpth,"rb")
         return(b64.b64encode(t.read()))
     def parser(self):
-        return(uparse.urlencode({"image":self.imgdata()}).encode('utf-8'))
+        return(uparse.urlencode({"image":self.imgdata(),"title":self.imgname}).encode('utf-8'))
     def imgup(self):
         headrs={"authorization":"Bearer "+self.access_token}
         robj=ureq.Request(self.url,data=self.parser(),headers=headrs)
