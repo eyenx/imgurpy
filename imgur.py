@@ -13,27 +13,14 @@ import base64 as b64
 import json as js
 import os.path as osp
 
-if (len(sys.argv) != 2):
-	sys.exit("\nYou must provide one filename as a parameter!\ntry again next time...\n")
-else:
-	imgpth=sys.argv[1]
-## define imgurcfg.json filepath
-cfgfile="****"
-## load cfgfile and read tokens and ids
-cfg=open(cfgfile,"r").read()
-cfg=js.loads(cfg)
-## other variables
-url="https://api.imgur.com/3/image"
-urlauth="https://api.imgur.com/oauth2/token"
-imgurl="http://i.imgur.com/"
-imgend=".jpg"
-
 class ImgUr():
-    def __init__(self,imgpth):
+    def __init__(self,imgpth,cfg,url,urlauth,imgurl,imgend):
         self.imgpth=imgpth
         self.imgname=osp.basename(self.imgpth)
         self.url=url
         self.urlauth=urlauth
+        self.imgurl=imgurl
+        self.imgend=imgend
         self.refresh_token=cfg["refresh_token"]
         self.client_id=cfg["client_id"]
         self.client_secret=cfg["client_secret"]
@@ -55,24 +42,39 @@ class ImgUr():
         return(js.loads(self.imgup()))
     def start(self):
         self.imgid=self.jsdo()["data"]["id"]
-        self.sthumb=imgurl+self.imgid+"s"+imgend
-        self.mthumb=imgurl+self.imgid+"m"+imgend
-        self.lthumb=imgurl+self.imgid+"l"+imgend
-        self.url=imgurl+self.imgid+imgend
+        self.sthumb=self.imgurl+self.imgid+"s"+self.imgend
+        self.mthumb=self.imgurl+self.imgid+"m"+self.imgend
+        self.lthumb=self.imgurl+self.imgid+"l"+self.imgend
+        self.url=self.imgurl+self.imgid+self.imgend
         self.forum="[url="+self.url+"][img]"+self.sthumb+"[/img][/url]"
+def main():
+    if (len(sys.argv) != 2):
+    	sys.exit("\nYou must provide one filename as a parameter!\ntry again next time...\n")
+    else:
+    	imgpth=sys.argv[1]
+    ## define imgurcfg.json filepath
+    cfgfile='****'
+    ## load cfgfile and read tokens and ids
+    cfg=open(cfgfile,"r").read()
+    cfg=js.loads(cfg)
+    ## other variables
+    url="https://api.imgur.com/3/image"
+    urlauth="https://api.imgur.com/oauth2/token"
+    imgurl="http://i.imgur.com/"
+    imgend=".jpg"
+    #create class
+    img=ImgUr(imgpth,cfg,url,urlauth,imgurl,imgend)
+    # first get auth token
+    img.refresh()
+    # start upload process
+    img.start()
+    #xclippin'
+    echofor=sub.Popen(['echo',img.forum],stdin=sub.PIPE,stdout=sub.PIPE)
+    xclipfor=sub.Popen(['xclip','-i','-se','c'],stdin=echofor.stdout)
+    echourl=sub.Popen(['echo',img.url],stdin=sub.PIPE,stdout=sub.PIPE)
+    xclipurl=sub.Popen(['xclip','-i','-se','p'],stdin=echourl.stdout)
+    # pretty output 
+    print("\nThumbnail (large):\t"+img.lthumb+"\nThumbnail (medium):\t"+img.mthumb+"\nThumbnail (small):\t"+img.sthumb+"\nImageUrl:\t\t"+img.url+"\nForumBBCode:\t\t"+img.forum+"\n\nIt has been xclipped! In the CTRL+V for ForumBBCode, SHIFT-Insert for ImageUrl")
 
-#create class
-img=ImgUr(imgpth)
-# first get auth token
-img.refresh()
-# start upload process
-img.start()
-#xclippin'
-echofor=sub.Popen(['echo',img.forum],stdin=sub.PIPE,stdout=sub.PIPE)
-xclipfor=sub.Popen(['xclip','-i','-se','c'],stdin=echofor.stdout)
-echourl=sub.Popen(['echo',img.url],stdin=sub.PIPE,stdout=sub.PIPE)
-xclipurl=sub.Popen(['xclip','-i','-se','p'],stdin=echourl.stdout)
-# pretty output 
-print("\nThumbnail (large):\t"+img.lthumb+"\nThumbnail (medium):\t"+img.mthumb+"\nThumbnail (small):\t"+img.sthumb+"\nImageUrl:\t\t"+img.url+"\nForumBBCode:\t\t"+img.forum+"\n\nIt has been xclipped! In the CTRL+V for ForumBBCode, SHIFT-Insert for ImageUrl")
-
-
+if __name__=='__main__':
+    main()
