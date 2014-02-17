@@ -5,7 +5,7 @@
 
 ## mods
 
-import sys 
+import sys
 import subprocess as sub
 import urllib.request as ureq
 import urllib.parse as uparse
@@ -47,7 +47,8 @@ class ImgUr():
         self.lthumb=self.imgurl+self.imgid+"l"+self.imgend
         self.url=self.imgurl+self.imgid+self.imgend
         self.forum="[url="+self.url+"][img]"+self.sthumb+"[/img][/url]"
-def main():
+
+if __name__=='__main__':
     if (len(sys.argv) != 2):
     	sys.exit("\nYou must provide one filename as a parameter!\ntry again next time...\n")
     else:
@@ -73,8 +74,7 @@ def main():
     xclipfor=sub.Popen(['xclip','-i','-se','c'],stdin=echofor.stdout)
     echourl=sub.Popen(['echo',img.url],stdin=sub.PIPE,stdout=sub.PIPE)
     xclipurl=sub.Popen(['xclip','-i','-se','p'],stdin=echourl.stdout)
-    # pretty output 
+    # pretty output
     print("\nThumbnail (large):\t"+img.lthumb+"\nThumbnail (medium):\t"+img.mthumb+"\nThumbnail (small):\t"+img.sthumb+"\nImageUrl:\t\t"+img.url+"\nForumBBCode:\t\t"+img.forum+"\n\nIt has been xclipped! In the CTRL+V for ForumBBCode, SHIFT-Insert for ImageUrl")
 
-if __name__=='__main__':
-    main()
+
