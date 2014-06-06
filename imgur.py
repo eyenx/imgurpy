@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 ## python imgur uploader script (got sick of imageshack)
-## by gnomeye
+## by eyenx
 
 ## mods
 
